@@ -339,4 +339,4 @@ export default function Movimientos() {
             `}</style>
         </div>
     )
-}
+} 
