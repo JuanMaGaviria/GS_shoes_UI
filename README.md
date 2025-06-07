@@ -20,8 +20,8 @@ Antes de comenzar, asegúrate de tener instalado:
 
 1. **Clona el repositorio**
    ```bash
-   git clone https://github.com/tu-usuario/nombre-del-proyecto.git
-   cd nombre-del-proyecto
+   https://github.com/JuanMaGaviria/GS_shoes_UI.git
+   cd GS_shoes_UI
    ```
 
 2. **Instala las dependencias**
@@ -33,14 +33,13 @@ Antes de comenzar, asegúrate de tener instalado:
 
 3. **Inicia el servidor de desarrollo**
    ```bash
-   npm start
-   # o con yarn
-   yarn start
+   npm run dev
+
    ```
 
 4. **Abre tu navegador**
    
-   La aplicación estará disponible en [http://localhost:3000](http://localhost:3000)
+   La aplicación estará disponible en [http://localhost:5173](http://localhost:5173)
 
 ## 🔑 Acceso al Sistema
 
@@ -55,14 +54,15 @@ Para iniciar sesión en la aplicación:
 
 ```
 src/
-├── components/          # Componentes reutilizables
-├── pages/              # Páginas principales de la aplicación
-│   ├── Dashboard/      # Panel principal
-│   ├── Users/          # Gestión de usuarios
-│   ├── Articles/       # Gestión de artículos
-│   └── Movements/      # Listado de movimientos
+├── assets/             # Recursos multimedia como imagenes
+├── context/            # Manejo de contexto global (no se usa)
+├── modules/            # Componentes principales de la aplicación
+│   ├── articulos/      # Gestión de artículos 
+│   ├── core/           # Componentes reutilizables del sistema (botones, tablas, etc)
+│   ├── inicio/         # Panel principal
+│   ├── movimientos/    # Gestión de movimientos
+│   └── usuarios/       # Gestión de usuarios
 ├── services/           # Servicios y llamadas a API
-├── utils/              # Utilidades y helpers
 └── App.js              # Componente principal
 ```
 
@@ -95,10 +95,10 @@ Módulo para visualizar movimientos del sistema:
 
 ## 🛠️ Scripts Disponibles
 
-- `npm start` - Inicia el servidor de desarrollo
+- `npm run dev` - Inicia el servidor de desarrollo
 - `npm run build` - Construye la aplicación para producción
 - `npm test` - Ejecuta las pruebas
-- `npm run eject` - Ejerce el proyecto (no reversible)
+
 
 ## 🤝 Contribuir
 
@@ -111,9 +111,3 @@ Módulo para visualizar movimientos del sistema:
 ## 📝 Licencia
 
 Este proyecto está bajo la Licencia MIT - ver el archivo [LICENSE.md](LICENSE.md) para más detalles.
-
-## 📞 Contacto
-
-Tu Nombre - tu.email@example.com
-
-Link del Proyecto: [https://github.com/tu-usuario/nombre-del-proyecto](https://github.com/tu-usuario/nombre-del-proyecto)

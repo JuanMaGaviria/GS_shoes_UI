@@ -12,8 +12,8 @@ import ProtectedRoute from './modules/Core/ProtectedRoute/components/ProtectedRo
 // importaciones de modulos
 import Inicio from './modules/Inicio/components/Inicio.jsx';
 import Usuarios from './modules/Usuarios/components/Usuarios.jsx';
-import Articulos from './modules/Articulos/components/Articulos.jsx';
-import Movimientos from './modules/Movimientos/components/Movimientos.jsx';
+// import Articulos from './modules/Articulos/components/Articulos.jsx';
+// import Movimientos from './modules/Movimientos/components/Movimientos.jsx';
 
 const App = () => {
     return (
@@ -23,8 +23,8 @@ const App = () => {
             <Route path="/app" element={<Sidebar />}>
                 <Route path="inicio" element={<Inicio />} />
                 <Route path="usuarios" element={<Usuarios />} />
-                <Route path="articulos" element={<Articulos />} />
-                <Route path="movimientos" element={<Movimientos />} />
+                {/* <Route path="articulos" element={<Articulos />} />
+                <Route path="movimientos" element={<Movimientos />} /> */}
             </Route>
         </Routes>
     );

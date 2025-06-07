@@ -137,13 +137,9 @@ const Login = () => {
 
       <div className="fond flex flex-col z-10 justify-center w-1/2 min-h-screen " style={{ backgroundColor: '#bababa' }}>
         <div className="context">
-        <h1 className="text-dark-color ml-3 text-xl font-semibold">
-          <span style={{ color: "#5d6364" }}>T</span>ableros de 
-          <span style={{ color: "#5d6364" }}> A</span>nálisis de 
-          <span style={{ color: "#5d6364" }}> M</span>étricas
-          <span style={{ color: "#5d6364" }}> E</span>scenciales
-        </h1>
-        <span className='nombre_app font-extrabold'>T.A.M.E</span>
+
+        <span className='nombre_app font-extrabold'><span style={{color: '#3F3F3F'}}>C</span>ontrol de <span style={{color: '#3F3F3F'}}>i</span>nventario</span>
+
         </div>
 
         <div className="area" >
