@@ -3,7 +3,7 @@ import { Outlet } from 'react-router-dom';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Toaster } from "react-hot-toast";
 import '../utils/Sidebar.css'
-import logo from '../../../../assets/logo.png';
+import logo from '../../../../assets/Logo.png';
 import { useUser } from '../../../../context/userContext'; // Ajustá el path según tu estructura
 
 
