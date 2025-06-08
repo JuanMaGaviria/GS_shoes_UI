@@ -5,7 +5,7 @@ import { Routes, Route } from 'react-router-dom';
 // importaciones generales 
 import Login from './modules/core/Login/components/Login.jsx'
 
-import CambiarClave from './modules/Core/Login/components/CambiarClave.jsx';
+import CambiarClave from './modules/core/Login/components/CambiarClave.jsx';
 import Sidebar from './modules/Core/Sidebar/components/Sidebar.jsx';
 import ProtectedRoute from './modules/Core/ProtectedRoute/components/ProtectedRoute.jsx';
 
