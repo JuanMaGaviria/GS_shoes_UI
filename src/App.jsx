@@ -4,7 +4,7 @@ import { Routes, Route } from 'react-router-dom';
 
 // importaciones generales 
 import Login from './modules/Core/Login/components/Login.jsx'
-import RestablecerClave from './modules/Core/Login/components/RestablecerClave.jsx'
+
 import CambiarClave from './modules/Core/Login/components/CambiarClave.jsx';
 import Sidebar from './modules/Core/Sidebar/components/Sidebar.jsx';
 import ProtectedRoute from './modules/Core/ProtectedRoute/components/ProtectedRoute.jsx';
@@ -13,7 +13,7 @@ import ProtectedRoute from './modules/Core/ProtectedRoute/components/ProtectedRo
 import Inicio from './modules/Inicio/components/Inicio.jsx';
 import Usuarios from './modules/Usuarios/components/Usuarios.jsx';
 import Articulos from './modules/Articulos/components/Articulos.jsx';
-import Movimientos from './modules/Movimientos/components/Movimientos.jsx';
+import Movimientos from './modules/movimientos/components/Movimientos.jsx';
 
 const App = () => {
     return (
