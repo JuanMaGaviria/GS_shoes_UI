@@ -144,7 +144,7 @@ export default function Movimientos() {
             Swal.fire({
                 icon: 'error',
                 title: 'Error',
-                text: No se pudo crear: ${error.message},
+                text: `No se pudo crear: ${error.message}`,
                 timer: 3000,
                 showConfirmButton: false,
                 toast: true,
@@ -175,7 +175,7 @@ export default function Movimientos() {
             Swal.fire({
                 icon: 'error',
                 title: 'Error',
-                text: No se pudo completar la operación: ${error.message},
+                text: `No se pudo completar la operación: ${error.message}`,
                 timer: 3000,
                 showConfirmButton: false,
                 toast: true,
@@ -337,6 +337,6 @@ export default function Movimientos() {
                     box-shadow: 0 5px 15px rgba(240, 158, 203, 0.4) !important;
                 }
             `}</style>
-        </div>
-    )
+        </div>
+    )
 } 
