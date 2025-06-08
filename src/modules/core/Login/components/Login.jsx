@@ -4,7 +4,7 @@ import { Toaster } from 'react-hot-toast';
 import RestablecerClave from './RestablecerClave';
 // import useAuth from '../hooks/useAuth'; // COMENTADO - Backend
 // import useSessionNotifications from '../hooks/useSessionNotification'; // COMENTADO - Backend
-import Logo from '../../../../assets/logo.png'
+import Logo from '../../../../assets/Logo.png'
 import '../utils/Login.css';
 
 const Login = () => {
