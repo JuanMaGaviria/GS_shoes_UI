@@ -3,7 +3,7 @@ import './index.css';
 import { Routes, Route } from 'react-router-dom';
 
 // importaciones generales 
-import Login from './modules/Core/Login/components/Login.jsx'
+import Login from './modules/core/Login/components/Login.jsx'
 
 import CambiarClave from './modules/Core/Login/components/CambiarClave.jsx';
 import Sidebar from './modules/Core/Sidebar/components/Sidebar.jsx';
