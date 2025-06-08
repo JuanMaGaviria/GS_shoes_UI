@@ -2,7 +2,8 @@ import ActionButton from "../../core/ActionButton/components/ActionButton";
 
 export const columnasGenerales = (handleDetails, handleEdit, handleToggleStatus, handleDelete) => [
     { header: 'Fecha movimiento', accessor: 'fecha_movimiento' },
-    { header: 'Cantidad', accessor: 'cantidad' },
+    { header: 'Tipo transaccion', accessor: 'tipo' },
+    { header: 'Cantidad', accessor: 'cantidad_total' },
     { header: 'Descripción', accessor: 'descripcion' },
     { header: 'Precio total', accessor: 'precio_total' },
 

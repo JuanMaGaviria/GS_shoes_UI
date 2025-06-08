@@ -6,12 +6,12 @@ export const useUpdateData = () => {
     const [isUpdating, setIsUpdating] = useState(false);
     const [updateError, setUpdateError] = useState(null);
 
-    const updateData = async (id, data, callback) => {
+    const updateData = async (id, data, setBackendErrors,callback) => {
         setIsUpdating(true);
         setUpdateError(null);
         
         try {
-            await api.patch(`usuarios/actualizar/${id}/`, data);
+            await api.put(`articulos/actualizar/${id}/`, data);
 
             const Toast = Swal.mixin({
                 toast: true,
@@ -31,6 +31,9 @@ export const useUpdateData = () => {
             if (callback) callback();
         } catch (err) {
             setUpdateError(err.message || 'Error al actualizar el registro');
+            if (err.response?.data && typeof setBackendErrors === 'function') {
+                setBackendErrors(err.response.data);
+            }
         } finally {
             setIsUpdating(false);
         }

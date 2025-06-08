@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { useValidation } from '../../core/Validation/hooks/useValidation.jsx';
 
 
-const Formulario = ({ formData, setFormData, modalData}) => {
+const Formulario = ({ formData, setFormData, modalData, backendErrors}) => {
 
     const validations = {
         nombre_completo: (value) => {
@@ -36,8 +36,13 @@ const Formulario = ({ formData, setFormData, modalData}) => {
        
     };
 
-    const { errors, validate, validateAll, clearError } = useValidation(validations);
+    const { errors, validate, validateAll, clearError, setBackendErrors } = useValidation(validations);
 
+    useEffect(() => {
+        if (backendErrors) {
+            setBackendErrors(backendErrors);
+        }
+    }, [backendErrors]);
 
     return (
         <>

@@ -23,12 +23,12 @@ export const useDeleteData = (setUsuarios) => {
             });
             if (result.isConfirmed) {
                 try {
-                    const response = await api.delete(`usuarios/eliminar/${id}/`);  // Endpoint para eliminar tipo de lista
+                    const response = await api.delete(`movimientos/eliminar/${id}/`);  // Endpoint para eliminar tipo de lista
                     setUsuarios((prev) => prev.filter((item) => item.id !== id));
-                    Swal.fire('Eliminado', 'El usuario ha sido eliminado.', 'success');
+                    Swal.fire('Eliminado', 'El movimiento ha sido eliminado.', 'success');
                     return response.data; // Devuelve la respuesta en caso de éxito
                 } catch (err) {
-                    setDeleteError(err.message || 'Error al eliminar el usuario');
+                    setDeleteError(err.message || 'Error al eliminar el movimiento');
                     throw err; // Lanza el error para manejarlo en el componente
                 } finally {
                     setIsDeleting(false);

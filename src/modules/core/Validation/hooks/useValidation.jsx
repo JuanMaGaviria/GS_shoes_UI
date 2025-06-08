@@ -34,5 +34,19 @@ export function useValidation(validations) {
         }));
     };
 
-    return { errors, validate, validateAll, clearError };
+    const setBackendErrors = (backendErrors) => {
+        const formattedErrors = {};
+        for (const field in backendErrors) {
+            const messages = backendErrors[field];
+            if (Array.isArray(messages) && messages.length > 0) {setBackendErrors 
+                formattedErrors[field] = messages[0];
+            }
+        }
+        setErrors((prevErrors) => ({
+            ...prevErrors,
+            ...formattedErrors,
+        }));
+    };
+
+    return { errors, validate, validateAll, clearError, setBackendErrors };
 }

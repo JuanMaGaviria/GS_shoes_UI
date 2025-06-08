@@ -3,7 +3,7 @@ import { Modal, Box, Typography, Button } from '@mui/material';
 import { useActionButton } from '../../ActionButton/hooks/useActionButton.jsx';
 import ActionButton from '../../ActionButton/components/ActionButton.jsx';
 import '../utils/ModalForm.css'
-const ModalForm = ({ open, onClose, title, children, onSubmit, actionButtonProps, width = 500, modalDetail=false }) => {
+const ModalForm = ({ open, onClose, title, children, onSubmit, actionButtonProps, width = 500, modalDetail=false,  hideActionButton = false }) => {
   const style = {
     position: 'absolute',
     top: '50%',
@@ -31,9 +31,12 @@ const ModalForm = ({ open, onClose, title, children, onSubmit, actionButtonProps
           }}
         >
           {children}
-          <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 3 }}>
-            <ActionButton {...actionButtonProps} />
-          </Box>
+          {!hideActionButton && (
+            <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 3 }}>
+              <ActionButton {...actionButtonProps} />
+            </Box>
+          )}
+
         </form>
       </Box>
     </Modal>

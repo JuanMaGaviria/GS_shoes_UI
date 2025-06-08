@@ -1,5 +1,5 @@
 import { useState } from 'react';
-// import api from '../../../services/api'; // Comentar para usar datos ficticios
+import api from '../../../services/api'; // Comentar para usar datos ficticios
 import Swal from 'sweetalert2';
 import usuariosFicticios from '../data/usuariosFicticios.json';
 
@@ -8,9 +8,9 @@ export function useCreateData() {
     const [error, setError] = useState(null);
 
     // Configuración: true para usar backend, false para usar datos ficticios
-    const USE_BACKEND = false; // Cambiar a true para usar backend
+    const USE_BACKEND = true; // Cambiar a true para usar backend
 
-    const createData = async (usuario) => {
+    const createData = async (usuario, setBackendErrors) => {
         setIsLoading(true);
         setError(null);
         try {
@@ -131,10 +131,21 @@ export function useCreateData() {
                 title: "Error al crear usuario",
                 text: err.message
             });
+            if (err.response && err.response.data) {
+                const backendErrors = err.response.data;
+            
+                // Llama a la función del formulario para que muestre los errores de backend
+                if (typeof setBackendErrors === 'function') {
+                    setBackendErrors(backendErrors);
+                }
+            }
 
             throw err;
+            
         } finally {
-            setIsLoading(false);
+            
+            setIsLoading(false); 
+
         }
     };
 

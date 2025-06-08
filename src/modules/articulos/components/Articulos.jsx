@@ -53,7 +53,10 @@ export default function Articulos() {
 
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [modalData, setModalData] = useState(null);
-    const [formData, setFormData] = useState({ nombre: '', cantidad: '', precio: '', descripcion: '' }); // Formulario controlado
+    const [formData, setFormData] = useState({ nombre: '', cantidad: '', precio: '', descripcion: '' ,umbral_minimo: ''}); // Formulario controlado
+
+    const [backendErrors, setBackendErrors] = useState({});
+
 
     const handleOpenModal = (data = null) => {
         setModalData(data);
@@ -62,27 +65,28 @@ export default function Articulos() {
             cantidad: data.cantidad,
             precio: data.precio,
             descripcion: data.descripcion,
+            umbral_minimo: data.umbral_minimo,
         } : {
             nombre: '',
             cantidad: '',
             precio: '',
-            descripcion: ''
+            descripcion: '',
+            umbral_minimo: '',
         });
-        // clearError('nombre_completo', 'identificacion', 'telefono', 'area', 'empresa', 'perfil', 'correo', 'password');
         setIsModalOpen(true);
     };
     const handleCloseModal = () => {
         setIsModalOpen(false);
         setModalData(null);
         setFormData({
-            nombre: '', cantidad: '', precio: '', descripcion: ''
+            nombre: '', cantidad: '', precio: '', descripcion: '', umbral_minimo: ''
         });
     };
     // Función de creación
     const handleCreate = async () => {
         if (isCreating) return;
         try {
-            const newRecord = await createData(formData);
+            const newRecord = await createData(formData, setBackendErrors);
             const formattedRecord = {
                 ...newRecord,
                 created_at: format(new Date(), "d 'de' MMMM 'de' yyyy, HH:mm:ss", { locale: es }),
@@ -91,42 +95,36 @@ export default function Articulos() {
             };
             setData((prev) => [...prev, formattedRecord]);
             handleCloseModal();
-        } catch (error) {
-            Swal.fire({
-                icon: 'error',
-                title: 'Error',
-                text: 'No se pudo crear: ${error.message}',
-                timer: 3000,
-                showConfirmButton: false,
-                toast: true,
-                position: 'top-right',
-            });
+            return true;
+        } catch {
+            return false;
         }
     };
+    
     // Función de actualización
     const handleSave = async () => {
-        if (isCreating) return; // Si hay errores, no continúa
+        if (isCreating) return;
         try {
-            if (modalData && modalData.id) {
-                await updateData(modalData.id, formData);
+            if (modalData?.id) {
+                await updateData(modalData.id, formData, setBackendErrors);
                 refetch();
-                // Actualiza el registro en el estado local
                 setData((prev) =>
                     prev.map((item) =>
                         item.id === modalData.id
-                            ? { ...item, ...formData, perfilVisual: getPerfilVisual(formData.perfil) }
+                            ? { ...item, ...formData }
                             : item
                     )
                 );
+                handleCloseModal();
             } else {
-                await handleCreate();
+                const result = await handleCreate();
+                if (!result) return; // Modal no se cierra si falla
             }
-            handleCloseModal();
         } catch (error) {
             Swal.fire({
                 icon: 'error',
                 title: 'Error',
-                text: 'No se pudo completar la operación: ${error.message}',
+                text: `No se pudo completar la operación: ${error.message}`,
                 timer: 3000,
                 showConfirmButton: false,
                 toast: true,
@@ -134,6 +132,7 @@ export default function Articulos() {
             });
         }
     };
+    
     const handleEdit = (row) => {
         handleOpenModal(row);
     };
@@ -243,6 +242,7 @@ export default function Articulos() {
                                 formData={formData}
                                 setFormData={setFormData}
                                 modalData={modalData}
+                                backendErrors={backendErrors}
                             />
                         </ModalForm>
                     </div>

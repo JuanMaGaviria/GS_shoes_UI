@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import Swal from 'sweetalert2';
-// import api from '../../../services/api'; // Comentar para usar datos ficticios
+import api from '../../../services/api'; // Comentar para usar datos ficticios
 import articulosFicticios from '../data/articulosFicticios.json'; // Datos ficticios
 
 export const useDisableStatus = (setArticulos) => {
@@ -8,7 +8,7 @@ export const useDisableStatus = (setArticulos) => {
     const [updateError, setUpdateError] = useState(null);
 
     // Configuración: true para usar backend, false para usar datos ficticios
-    const USE_BACKEND = false; // Cambiar a true para usar backend
+    const USE_BACKEND = true; // Cambiar a true para usar backend
 
     const toggleStatus = async (id, currentStatus) => {
         setIsUpdating(true);
@@ -32,8 +32,8 @@ export const useDisableStatus = (setArticulos) => {
 
                 if (USE_BACKEND) {
                     // Lógica para backend
-                    const response = await api.patch(`articulos/${id}/estado/`);
-                    newStatus = response.data.data.is_active;
+                    const response = await api.patch(`articulos/actualizar/${id}/`);
+                    newStatus = response.data.is_active;
                 } else {
                     // Simular delay de API para datos ficticios
                     await new Promise(resolve => setTimeout(resolve, 600));

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-// import api from '../../../services/api'; // Comentar para usar datos ficticios
+import api from '../../../services/api'; // Comentar para usar datos ficticios
 import Swal from 'sweetalert2';
 import articulosFicticios from '../data/articulosFicticios.json'; // Datos ficticios
 
@@ -8,9 +8,9 @@ export function useCreateData() {
     const [error, setError] = useState(null);
 
     // Configuración: true para usar backend, false para usar datos ficticios
-    const USE_BACKEND = false; // Cambiar a true para usar backend
+    const USE_BACKEND = true; // Cambiar a true para usar backend
 
-    const createData = async (articulo) => {
+    const createData = async (articulo, setBackendErrors) => {
         setIsLoading(true);
         setError(null);
         try {
@@ -97,6 +97,10 @@ export function useCreateData() {
 
         } catch (err) {
             setError(err.message);
+
+            if (err.response?.data && typeof setBackendErrors === 'function') {
+                setBackendErrors(err.response.data);
+            }
             
             // Toast de error
             const Toast = Swal.mixin({

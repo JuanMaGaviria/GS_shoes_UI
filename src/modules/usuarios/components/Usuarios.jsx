@@ -54,7 +54,7 @@ export default function Usuarios() {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [modalData, setModalData] = useState(null);
     const [formData, setFormData] = useState({ nombre_completo: '', identificacion: '', telefono: '', correo: '', password: '' }); // Formulario controlado
-
+    const [backendErrors, setBackendErrors] = useState({});
     const handleOpenModal = (data = null) => {
         setModalData(data);
         setFormData(data ? {
@@ -82,9 +82,9 @@ export default function Usuarios() {
     };
     // Función de creación
     const handleCreate = async () => {
-        if (isCreating) return; 
+        if (isCreating) return;
         try {
-            const newRecord = await createData(formData);
+            const newRecord = await createData(formData, setBackendErrors);
             const formattedRecord = {
                 ...newRecord,
                 created_at: format(new Date(), "d 'de' MMMM 'de' yyyy, HH:mm:ss", { locale: es }),
@@ -94,36 +94,32 @@ export default function Usuarios() {
             setData((prev) => [...prev, formattedRecord]);
             handleCloseModal();
         } catch (error) {
-            Swal.fire({
-                icon: 'error',
-                title: 'Error',
-                text: `No se pudo crear: ${error.message}`,
-                timer: 3000,
-                showConfirmButton: false,
-                toast: true,
-                position: 'top-right',
-            });
+            // No cierras la modal aquí
+            console.error('Error al crear usuario:', error);
         }
     };
+
+    
     // Función de actualización
     const handleSave = async () => {
-        if (isCreating) return; // Si hay errores, no continúa
+        if (isCreating) return;
         try {
             if (modalData && modalData.id) {
-                await updateData(modalData.id, formData);
-                refetch(); 
-                // Actualiza el registro en el estado local
+                await updateData(modalData.id, formData, setBackendErrors);
+                refetch();
                 setData((prev) =>
                     prev.map((item) =>
                         item.id === modalData.id
                             ? { ...item, ...formData, perfilVisual: getPerfilVisual(formData.perfil) }
-                            : item  
+                            : item
                     )
                 );
+                handleCloseModal();
             } else {
-                await handleCreate();
+                const result = await handleCreate();
+                if (!result) return;
+                handleCloseModal();
             }
-            handleCloseModal();
         } catch (error) {
             Swal.fire({
                 icon: 'error',
@@ -136,6 +132,7 @@ export default function Usuarios() {
             });
         }
     };
+       
     const handleEdit = (row) => {
         handleOpenModal(row);
     };
@@ -246,6 +243,7 @@ export default function Usuarios() {
                                 formData={formData}
                                 setFormData={setFormData}
                                 modalData={modalData}
+                                backendErrors={backendErrors}  
                             />
                             
                         </ModalForm>

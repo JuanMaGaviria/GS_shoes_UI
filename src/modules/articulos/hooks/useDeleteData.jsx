@@ -23,7 +23,7 @@ export const useDeleteData = (setUsuarios) => {
             });
             if (result.isConfirmed) {
                 try {
-                    const response = await api.delete(`usuarios/eliminar/${id}/`);  // Endpoint para eliminar tipo de lista
+                    const response = await api.delete(`articulos/eliminar/${id}/`);  // Endpoint para eliminar tipo de lista
                     setUsuarios((prev) => prev.filter((item) => item.id !== id));
                     Swal.fire('Eliminado', 'El usuario ha sido eliminado.', 'success');
                     return response.data; // Devuelve la respuesta en caso de éxito

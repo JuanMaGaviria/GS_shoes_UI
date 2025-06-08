@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
-// import api from '../../../services/api'; // Comentar para usar datos ficticios
+import api from '../../../services/api'; // Comentar para usar datos ficticios
 import movimientosFicticios from '../data/movimientosFicticios.json'; // Datos ficticios
 
 const useFetchData = () => {
@@ -17,7 +17,7 @@ const useFetchData = () => {
     const [valueToOrderBy, setValueToOrderBy] = useState('nombre');
 
     // Configuración: true para usar backend, false para usar datos ficticios
-    const USE_BACKEND = false; // Cambiar a true para usar backend
+    const USE_BACKEND = true; // Cambiar a true para usar backend
 
     const fetchData = async () => {
         setIsLoading(true);

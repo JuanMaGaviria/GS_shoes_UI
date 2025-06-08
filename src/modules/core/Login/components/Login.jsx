@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import RestablecerClave from './RestablecerClave';
-// import useAuth from '../hooks/useAuth'; // COMENTADO - Backend
-// import useSessionNotifications from '../hooks/useSessionNotification'; // COMENTADO - Backend
+import useAuth from '../hooks/useAuth'; // COMENTADO - Backend
+import useSessionNotifications from '../hooks/useSessionNotification'; // COMENTADO - Backend
 import Logo from '../../../../assets/Logo.png'
 import '../utils/Login.css';
 
@@ -11,11 +11,11 @@ const Login = () => {
   const navigate = useNavigate();
   
   // SIMULACIÓN DE ESTADO LOCAL - Reemplaza useAuth hook
-  const [correo, setCorreo] = useState('');
-  const [password, setPassword] = useState('');
-  const [errors, setErrors] = useState({});
+  // const [correo, setCorreo] = useState('');
+  // const [password, setPassword] = useState('');
+  // const [errors, setErrors] = useState({});
   
-  // const { correo, password, errors, setCorreo, setPassword, handleLogin } = useAuth(); // COMENTADO - Backend
+  const { correo, password, errors, setCorreo, setPassword, handleLogin } = useAuth(); // COMENTADO - Backend
   const [isLogin, setIsLogin] = useState(true); // true: muestra login, false: muestra restablecimiento
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   
@@ -29,45 +29,6 @@ const Login = () => {
     setIsLogin(false);
   };
 
-  // SIMULACIÓN DE LOGIN - Reemplaza handleLogin del hook
-  const handleLogin = (e) => {
-    e.preventDefault();
-    
-    // Validación básica local (opcional)
-    const newErrors = {};
-    
-    if (!correo.trim()) {
-      newErrors.correo = ['El correo es requerido'];
-    }
-    
-    if (!password.trim()) {
-      newErrors.password = ['La contraseña es requerida'];
-    }
-    
-    if (Object.keys(newErrors).length > 0) {
-      setErrors(newErrors);
-      return;
-    }
-    
-    // Limpiar errores
-    setErrors({});
-    
-    // SIMULACIÓN DE LOGIN EXITOSO
-    console.log('Simulando login con:', { correo, password });
-    
-    // Aquí puedes guardar datos simulados en localStorage si necesitas persistencia
-    localStorage.setItem('isAuthenticated', 'true');
-    localStorage.setItem('user', JSON.stringify({ 
-      correo: correo, 
-      nombre: 'Usuario Demo' 
-    }));
-    
-    // Navegar a la página principal o dashboard
-    navigate('/app/inicio'); // Cambia '/dashboard' por la ruta que necesites
-    
-    // CÓDIGO ORIGINAL COMENTADO - Backend
-    // handleLogin(e); // Esta función venía del hook useAuth
-  };
 
   return (
     <div className="flex items-center min-h-screen max-h-full">

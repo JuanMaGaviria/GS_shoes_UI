@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { useValidation } from '../../core/Validation/hooks/useValidation.jsx';
 
 
-const Formulario = ({ formData, setFormData, modalData}) => {
+const Formulario = ({ formData, setFormData, modalData, backendErrors}) => {
 
     const validations = {
         nombre: (value) => {
@@ -32,8 +32,13 @@ const Formulario = ({ formData, setFormData, modalData}) => {
        
     };
 
-    const { errors, validate, validateAll, clearError } = useValidation(validations);
+    const { errors, validate, validateAll, clearError, setBackendErrors } = useValidation(validations);
 
+    useEffect(() => {
+        if (backendErrors) {
+            setBackendErrors(backendErrors);
+        }
+    }, [backendErrors]);
 
     return (
         <>
@@ -102,6 +107,29 @@ const Formulario = ({ formData, setFormData, modalData}) => {
                 </div>
 
             </div>
+            <div className="flex" style={{ marginBottom: '10px', marginTop: '10px' }}>
+                <div className="flex flex-col w-full">
+                    <label className="text-zinc-800 text-sm mt-7" htmlFor="nombre">
+                        Umbral mínimo de stock <span className="font-bold text-red-700">*</span>
+                    </label>
+                    <input
+                        type="number"
+                        id="umbral_minimo"
+                        placeholder="Ingrese el umbral mínimo del articulo"
+                        className={`campo block w-full rounded-md border py-1.5 pl-2 pr-1 mt-1 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-1 focus:ring-inset sm:text-sm sm:leading-6 ${errors.nombre ? 'border-red-500 focus:ring-red-500' : 'border-gray-300 focus:ring-green-500'}`}
+                        value={formData.umbral_minimo}
+                        onChange={(e) => {
+                            setFormData({ ...formData, umbral_minimo: e.target.value });
+                            validate('umbral_minimo', e.target.value);
+                        }}
+                        onBlur={() => validate('umbral_minimo', formData.umbral_minimo)}
+                    />
+                    {errors.umbral_minimo && <small className="text-red-500">{errors.umbral_minimo}</small>}
+                </div>
+
+                
+            </div>
+
              <div className="flex" style={{ marginBottom: '10px', marginTop: '10px' }}>
                 <div className="flex flex-col w-full">
                     <label className="text-zinc-800 text-sm mt-7" htmlFor="descripcion">

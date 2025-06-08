@@ -1,78 +1,46 @@
 import React, { useState, useEffect } from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line, PieChart, Pie, Cell, Area, AreaChart } from 'recharts';
+import api from '../../../services/api';
 
-// Datos simulados para el dashboard
-const inventarioData = {
-  // Artículos con stock bajo
-  stockBajo: [
-    { codigo: '#001', nombre: 'Nike Air Max 270', stock: 15, umbral: 20, porcentaje: 75, estado: 'critico' },
-    { codigo: '#002', nombre: 'Adidas Ultraboost', stock: 8, umbral: 15, porcentaje: 53, estado: 'medio' },
-    { codigo: '#003', nombre: 'Converse Chuck Taylor', stock: 12, umbral: 25, porcentaje: 48, estado: 'medio' },
-    { codigo: '#004', nombre: 'Vans Old Skool', stock: 5, umbral: 20, porcentaje: 25, estado: 'critico' },
-    { codigo: '#005', nombre: 'Nike Air Force 1', stock: 18, umbral: 30, porcentaje: 60, estado: 'medio' },
-    { codigo: '#006', nombre: 'Adidas Stan Smith', stock: 22, umbral: 35, porcentaje: 63, estado: 'medio' }
-  ],
+// // Datos simulados para el dashboard
+// const inventarioData = {
+//   // Artículos con stock bajo
+//   stockBajo: [
+//     { codigo: '#001', nombre: 'Nike Air Max 270', stock: 15, umbral: 20, porcentaje: 75, estado: 'critico' },
+//     { codigo: '#002', nombre: 'Adidas Ultraboost', stock: 8, umbral: 15, porcentaje: 53, estado: 'medio' },
+//     { codigo: '#003', nombre: 'Converse Chuck Taylor', stock: 12, umbral: 25, porcentaje: 48, estado: 'medio' },
+//     { codigo: '#004', nombre: 'Vans Old Skool', stock: 5, umbral: 20, porcentaje: 25, estado: 'critico' },
+//     { codigo: '#005', nombre: 'Nike Air Force 1', stock: 18, umbral: 30, porcentaje: 60, estado: 'medio' },
+//     { codigo: '#006', nombre: 'Adidas Stan Smith', stock: 22, umbral: 35, porcentaje: 63, estado: 'medio' }
+//   ],
   
-  // Datos para gráfica de tendencias de ventas
-  ventasTendencia: [
-    { mes: 'Ene', ventas: 45, inventario: 320 },
-    { mes: 'Feb', ventas: 52, inventario: 298 },
-    { mes: 'Mar', ventas: 48, inventario: 315 },
-    { mes: 'Abr', ventas: 61, inventario: 289 },
-    { mes: 'May', ventas: 55, inventario: 305 },
-    { mes: 'Jun', ventas: 67, inventario: 278 }
-  ],
-  
-  // Datos para gráfica de categorías
-  categorias: [
-    { categoria: 'Deportivos', cantidad: 145, porcentaje: 35 },
-    { categoria: 'Casuales', cantidad: 98, porcentaje: 24 },
-    { categoria: 'Formales', cantidad: 76, porcentaje: 18 },
-    { categoria: 'Botas', cantidad: 52, porcentaje: 13 },
-    { categoria: 'Sandalias', cantidad: 41, porcentaje: 10 }
-  ],
-  
-  // Datos para gráfica de tallas más vendidas
-  tallas: [
-    { talla: '36', cantidad: 28 },
-    { talla: '37', cantidad: 45 },
-    { talla: '38', cantidad: 52 },
-    { talla: '39', cantidad: 67 },
-    { talla: '40', cantidad: 73 },
-    { talla: '41', cantidad: 58 },
-    { talla: '42', cantidad: 49 },
-    { talla: '43', cantidad: 35 },
-    { talla: '44', cantidad: 22 }
-  ],
-  
-  // Distribución por marcas
-  marcas: [
-    { name: 'Nike', value: 32, color: '#FF6B6B' },
-    { name: 'Adidas', value: 28, color: '#4ECDC4' },
-    { name: 'Converse', value: 15, color: '#45B7D1' },
-    { name: 'Vans', value: 12, color: '#96CEB4' },
-    { name: 'Puma', value: 8, color: '#FFEAA7' },
-    { name: 'Otros', value: 5, color: '#DDA0DD' }
-  ]
-};
+//   // Datos para gráfica de tendencias de ventas
+//   ventasTendencia: ,
+// }
 
 export default function Inicio() {
-  const [selectedPeriod, setSelectedPeriod] = useState('mes');
+  const [inventarioData, setInventarioData] = useState({
+    stockBajo: [],
+    ventasTendencia: [
+          { mes: 'Ene', ventas: 45, inventario: 320 },
+          { mes: 'Feb', ventas: 52, inventario: 298 },
+          { mes: 'Mar', ventas: 48, inventario: 315 },
+          { mes: 'Abr', ventas: 61, inventario: 289 },
+          { mes: 'May', ventas: 55, inventario: 305 },
+          { mes: 'Jun', ventas: 67, inventario: 278 }
+        ],
+  });
+
+  
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
+
 
   const handleNavigateHome = () => {
     // Aquí puedes implementar la navegación según tu router
     console.log('Navegando al inicio');
   };
 
-  // Función para obtener el color según el estado del stock
-  const getStatusColor = (estado) => {
-    switch (estado) {
-      case 'critico': return '#FF4757';
-      case 'medio': return '#FFA502';
-      case 'bueno': return '#2ED573';
-      default: return '#747D8C';
-    }
-  };
 
   // Función para obtener el color de la barra de progreso
   const getProgressColor = (porcentaje) => {
@@ -116,7 +84,9 @@ export default function Inicio() {
         </div>
 
         {/* Alertas de Stock Bajo */}
+      
         <div className="p-6" style={{padding: '24px'}}>
+          {inventarioData.stockBajo.length > 0 && (
           <div className="bg-orange-50 border-l-4 border-orange-400 p-4 mb-6 rounded" style={{padding: '16px', marginBottom: '24px'}}>
             <div className="flex items-center">
               <svg className="w-5 h-5 text-orange-400 mr-2" fill="currentColor" viewBox="0 0 20 20">
@@ -125,34 +95,44 @@ export default function Inicio() {
               <span className="text-orange-800 font-medium">Artículos por debajo del umbral permitido</span>
             </div>
           </div>
+          )}
 
           {/* Grid de productos con stock bajo */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-8" style={{ marginBottom: '32px' }}>
-            {inventarioData.stockBajo.map((item, index) => (
-              <div key={index} className="bg-white border border-gray-200 rounded-lg p-4 shadow-sm" style={{ padding: '16px' }}>
-                <div className="flex justify-between items-start mb-3">
-                  <div className="flex-1">
-                    <span className="text-xs text-gray-500 font-medium">{item.codigo}</span>
-                    <h3 className="text-sm font-semibold text-gray-800 mt-1">{item.nombre}</h3>
-                    <p className="text-xs text-gray-600 mt-1">Stock actual: {item.stock} / Umbral: {item.umbral}</p>
-                  </div>
-                  <span className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${
-                    item.estado === 'critico' ? 'bg-red-100 text-red-800' : 'bg-yellow-100 text-yellow-800'
-                  }`}>
-                    {item.porcentaje}%
-                  </span>
-                </div>
-                <div className="w-full bg-gray-200 rounded-full h-2">
-                  <div 
-                    className="h-2 rounded-full transition-all duration-300"
-                    style={{ 
-                      width: `${item.porcentaje}%`,
-                      backgroundColor: getProgressColor(item.porcentaje)
-                    }}
-                  />
-                </div>
+            {inventarioData.stockBajo.length === 0 ? (
+              <div className="col-span-full text-center text-sm text-gray-600 p-4 bg-green-50 border border-green-200 rounded">
+                <svg className="w-5 h-5 inline-block mr-2 text-green-500" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.707a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd"/>
+                </svg>
+                Todos los artículos están por encima del umbral mínimo de stock.
               </div>
-            ))}
+            ) : (
+              inventarioData.stockBajo.map((item, index) => (
+                <div key={index} className="bg-white border border-gray-200 rounded-lg p-4 shadow-sm" style={{ padding: '16px' }}>
+                  <div className="flex justify-between items-start mb-3">
+                    <div className="flex-1">
+                      <span className="text-xs text-gray-500 font-medium">{item.codigo}</span>
+                      <h3 className="text-sm font-semibold text-gray-800 mt-1">{item.nombre}</h3>
+                      <p className="text-xs text-gray-600 mt-1">Stock actual: {item.stock} / Umbral: {item.umbral}</p>
+                    </div>
+                    <span className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${
+                      item.estado === 'critico' ? 'bg-red-100 text-red-800' : 'bg-yellow-100 text-yellow-800'
+                    }`}>
+                      {item.porcentaje}%
+                    </span>
+                  </div>
+                  <div className="w-full bg-gray-200 rounded-full h-2">
+                    <div 
+                      className="h-2 rounded-full transition-all duration-300"
+                      style={{ 
+                        width: `${item.porcentaje}%`,
+                        backgroundColor: getProgressColor(item.porcentaje)
+                      }}
+                    />
+                  </div>
+                </div>
+              ))
+            )}
           </div>
 
           {/* Gráficas de análisis */}
@@ -194,91 +174,8 @@ export default function Inicio() {
                 </AreaChart>
               </ResponsiveContainer>
             </div>
-
-            {/* Gráfica de distribución por marcas */}
-            <div className="bg-white border border-gray-200 rounded-lg p-6 shadow-sm" style={{ padding: '24px' }}>
-              <h3 className="text-lg font-medium text-gray-800 mb-4">Distribución por Marcas</h3>
-              <ResponsiveContainer width="100%" height={300}>
-                <PieChart>
-                  <Pie
-                    data={inventarioData.marcas}
-                    cx="50%"
-                    cy="50%"
-                    innerRadius={60}
-                    outerRadius={100}
-                    paddingAngle={5}
-                    dataKey="value"
-                  >
-                    {inventarioData.marcas.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={entry.color} />
-                    ))}
-                  </Pie>
-                  <Tooltip 
-                    formatter={(value) => [`${value}%`, 'Porcentaje']}
-                    contentStyle={{ 
-                      backgroundColor: '#fff', 
-                      border: '1px solid #e2e8f0',
-                      borderRadius: '6px',
-                      fontSize: '12px'
-                    }}
-                  />
-                </PieChart>
-              </ResponsiveContainer>
-              <div className="grid grid-cols-2 gap-2 mt-4" style={{ marginTop: '16px' }}>
-                {inventarioData.marcas.map((marca, index) => (
-                  <div key={index} className="flex items-center">
-                    <div 
-                      className="w-3 h-3 rounded-full mr-2"
-                      style={{ backgroundColor: marca.color, marginRight: '8px' }}
-                    />
-                    <span className="text-xs text-gray-600">{marca.name}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Gráfica de categorías */}
-            <div className="bg-white border border-gray-200 rounded-lg p-6 shadow-sm" style={{ padding: '24px' }}>
-              <h3 className="text-lg font-medium text-gray-800 mb-4" style={{ marginBottom: '16px' }}>Inventario por Categorías</h3>
-              <ResponsiveContainer width="100%" height={300}>
-                <BarChart data={inventarioData.categorias} layout="horizontal">
-                  <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
-                  <XAxis type="number" tick={{ fontSize: 12 }} />
-                  <YAxis dataKey="categoria" type="category" tick={{ fontSize: 11 }} width={60} />
-                  <Tooltip 
-                    contentStyle={{ 
-                      backgroundColor: '#fff', 
-                      border: '1px solid #e2e8f0',
-                      borderRadius: '6px',
-                      fontSize: '12px'
-                    }}
-                  />
-                  <Bar dataKey="cantidad" fill="#45B7D1" radius={[0, 4, 4, 0]} />
-                </BarChart>
-              </ResponsiveContainer>
-            </div>
-
-            {/* Gráfica de tallas más vendidas */}
-            <div className="lg:col-span-2 bg-white border border-gray-200 rounded-lg p-6 shadow-sm" style={{ padding: '24px' }}>
-              <h3 className="text-lg font-medium text-gray-800 mb-4" style={{ marginBottom: '16px' }}>Distribución de Ventas por Talla</h3>
-              <ResponsiveContainer width="100%" height={300}>
-                <BarChart data={inventarioData.tallas}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
-                  <XAxis dataKey="talla" tick={{ fontSize: 12 }} />
-                  <YAxis tick={{ fontSize: 12 }} />
-                  <Tooltip 
-                    contentStyle={{ 
-                      backgroundColor: '#fff', 
-                      border: '1px solid #e2e8f0',
-                      borderRadius: '6px',
-                      fontSize: '12px'
-                    }}
-                  />
-                  <Bar dataKey="cantidad" fill="#f09ecb" radius={[4, 4, 0, 0]} />
-                </BarChart>
-              </ResponsiveContainer>
-            </div>
           </div>
+
 
           {/* Resumen estadístico */}
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mt-8" style={{ marginTop: '32px' }}>

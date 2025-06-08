@@ -20,6 +20,7 @@ import { useActionButton } from '../../core/ActionButton/hooks/useActionButton.j
 import { useUpdateData } from '../hooks/useUpdateData.jsx';
 import { useDisableStatus } from '../hooks/useDisableStatus.jsx';
 import { useDeleteData } from '../hooks/useDeleteData.jsx';
+import { useArticulosDisponibles } from '../hooks/useArticulosDisponibles.jsx';
 import Formulario from './formulario.jsx';  // Importa el nuevo formulario
 import '../utils/movimientos.css'
 
@@ -44,6 +45,8 @@ export default function Movimientos() {
         refetch
     } = useFetchData();
 
+    const { articulos, loading: loadingArticulos } = useArticulosDisponibles();
+
     const { handleClick } = useActionButton();
 
     const { createData, isLoading: isCreating, error: createError } = useCreateData();
@@ -54,84 +57,57 @@ export default function Movimientos() {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [modalData, setModalData] = useState(null);
     const [formData, setFormData] = useState({ nombre_completo: '', identificacion: '', telefono: '', area: '', empresa: '', perfil: '', correo: '', password: '' }); // Formulario controlado
-
-    // Función para mostrar alerta de funcionalidad en desarrollo
-    const showDevelopmentAlert = () => {
-        Swal.fire({
-            icon: 'info',
-            title: '🚧 Funcionalidad en Desarrollo',
-            html: `
-                <div style="text-align: center; padding: 10px;">
-                    <p style="color: #666; font-size: 16px; margin-bottom: 10px;">
-                        Esta funcionalidad está actualmente en desarrollo
-                    </p>
-                    <p style="color: #999; font-size: 14px;">
-                        Estará disponible muy pronto
-                    </p>
-                </div>
-            `,
-            confirmButtonText: 'Entendido',
-            confirmButtonColor: '#F09ECB',
-            customClass: {
-                popup: 'swal-custom-popup',
-                title: 'swal-custom-title',
-                confirmButton: 'swal-custom-button'
-            },
-            showClass: {
-                popup: 'animate_animated animatefadeInDown animate_faster'
-            },
-            hideClass: {
-                popup: 'animate_animated animatefadeOutUp animate_faster'
-            }
-        });
-    };
-
-    // Función para el botón "Nuevo registro" deshabilitado
-    const handleNewRecordClick = () => {
-        showDevelopmentAlert();
-    };
+    
+    const [backendErrors, setBackendErrors] = useState({});
   
     const handleOpenModal = (data = null) => {
-        // Mostrar alerta en lugar de abrir el modal
-        showDevelopmentAlert();
-        return; // No ejecutar el resto de la función
-        
         setModalData(data);
+    
+        const cliente = Array.isArray(data?.cliente) 
+            ? (data.cliente.length > 0 ? data.cliente[0] : null)
+            : data?.cliente;
+    
         setFormData(data ? {
-            nombre_completo: data.nombre_completo,
-            identificacion: data.identificacion,
-            telefono: data.telefono,
-            area: data.area,
-            empresa: data.empresa,
-            perfil: data.perfil,
-            correo: data.correo,
-            password: data.password
+            articulo: data.articulo,
+            cantidad_total: data.cantidad_total,
+            descripcion: data.descripcion || '',
+            tipo: data.tipo,
+            cedula_cliente: cliente?.cedula_cliente || '',
+            nombre_cliente: cliente?.nombre_cliente || '',
         } : {
-            nombre_completo: '',
-            identificacion: '',
-            telefono: '',
-            area: '',
-            empresa: '',
-            perfil: '',
-            correo: '',
-            password: ''
+            articulo: '',
+            cantidad_total: '',
+            descripcion: '',
+            tipo: 'ENTRADA',
+            cedula_cliente: '',
+            nombre_cliente: '',
         });
+    
         setIsModalOpen(true);
     };
+    
+    
 
     const handleCloseModal = () => {
         setIsModalOpen(false);
         setModalData(null);
         setFormData({
-            nombre_completo: '', identificacion: '', telefono: '', area: '', empresa: '', correo: '', password: ''
+            articulo: '',
+            cantidad_total: '',
+            descripcion: '',
+            tipo: 'ENTRADA',    
+            cedula_cliente: '',
+            nombre_cliente: '',
         });
     };
+    
 
     // Función de creación
     const handleCreate = async () => {
         if (isCreating) return; 
         try {
-            const newRecord = await createData(formData);
+            console.log(formData);
+            const newRecord = await createData(formData, setBackendErrors);
             const formattedRecord = {
                 ...newRecord,
                 created_at: format(new Date(), "d 'de' MMMM 'de' yyyy, HH:mm:ss", { locale: es }),
@@ -156,6 +132,7 @@ export default function Movimientos() {
     // Función de actualización
     const handleSave = async () => {
         if (isCreating) return;
+    
         try {
             if (modalData && modalData.id) {
                 await updateData(modalData.id, formData);
@@ -164,13 +141,15 @@ export default function Movimientos() {
                     prev.map((item) =>
                         item.id === modalData.id
                             ? { ...item, ...formData, perfilVisual: getPerfilVisual(formData.perfil) }
-                            : item  
+                            : item
                     )
                 );
+                handleCloseModal();  // ✅ Solo cierra si actualiza sin errores
             } else {
-                await handleCreate();
+                const resultado = await handleCreate();  // ✅ handleCreate debe retornar true/false
+                if (!resultado) return; // ❌ No cierres si falló
+                handleCloseModal();      // ✅ Cierra solo si se creó exitosamente
             }
-            handleCloseModal();
         } catch (error) {
             Swal.fire({
                 icon: 'error',
@@ -183,10 +162,10 @@ export default function Movimientos() {
             });
         }
     };
-
+    
     // Función de edición modificada para mostrar alerta
     const handleEdit = (row) => {
-        showDevelopmentAlert();
+        handleOpenModal(row);
     };
 
     const handleToggleStatus = (id, currentStatus) => {
@@ -232,18 +211,16 @@ export default function Movimientos() {
                             <div>
                                 <ActionButton
                                     text="Nuevo registro"
-                                    onClick={handleNewRecordClick}
-                                    color="#cccccc"
-                                    textColor="#666666"
+                                    onClick={() => handleOpenModal()}
+                                    color="#F09ECB"
+                                    textColor="#FFFFFF"
                                     size="small"
                                     icon={<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"><g fill="currentColor" fillRule="evenodd" clipRule="evenodd"><path d="M2 12C2 6.477 6.477 2 12 2s10 4.477 10 10s-4.477 10-10 10S2 17.523 2 12m10-8a8 8 0 1 0 0 16a8 8 0 0 0 0-16" /><path d="M13 7a1 1 0 1 0-2 0v4H7a1 1 0 1 0 0 2h4v4a1 1 0 1 0 2 0v-4h4a1 1 0 1 0 0-2h-4z" /></g></svg>}
                                     handleClick={handleClick}
                                     customStyles={{ 
                                         fontWeight: '400', 
                                         height: '35px', 
-                                        borderRadius: '5px',
-                                        cursor: 'not-allowed',
-                                        opacity: '0.6'
+                                        borderRadius: '5px'
                                     }}
                                 />
                             </div>
@@ -291,19 +268,23 @@ export default function Movimientos() {
                         <ModalForm
                             open={isModalOpen}
                             onClose={handleCloseModal}
-                            title={modalData ? 'Editar usuario' : 'Nuevo usuario'}
+                            title={modalData ? 'Editar movimiento' : 'Nuevo movimiento'}
                             onSubmit={handleSave}
                             actionButtonProps={{
                                 text: modalData ? 'Actualizar' : 'Guardar',
                                 color: '#F09ECB',
                                 textColor: '#FFFFFF',
-                                size: 'small'
+                                size: 'small',
                             }}
+                            hideActionButton={modalData ? true : false}
                         >
                             <Formulario
                                 formData={formData}
                                 setFormData={setFormData}
                                 modalData={modalData}
+                                articulos={articulos}
+                                loading={loadingArticulos}
+                                backendErrors={backendErrors}
                             />
                             
                         </ModalForm>

@@ -2,15 +2,15 @@ import { useState } from 'react';
 import Swal from 'sweetalert2';
 import api from '../../../services/api';
 
-export const useDisableStatus = (setUsuarios) => {
+export const useDisableStatus = (setData) => {
     const [isUpdating, setIsUpdating] = useState(false);
     const [updateError, setUpdateError] = useState(null);
 
     const toggleStatus = async (id, currentStatus) => {
         setIsUpdating(true);
         setUpdateError(null);
+
         try {
-            // SweetAlert para confirmar la acción
             const result = await Swal.fire({
                 title: "¿Estás seguro?",
                 text: "¡El registro cambiará su estado!",
@@ -22,42 +22,40 @@ export const useDisableStatus = (setUsuarios) => {
                 cancelButtonText: "Cancelar",
             });
 
-            if (result.isConfirmed) {
-                // Llamada al API para cambiar el estado
-                const response = await api.patch(`usuarios/${id}/estado/`); 
-                const newStatus = response.data.data.is_active;
+            if (!result.isConfirmed) return;
 
-                // Actualizar el estado local con la nueva data
-                setUsuarios((prev) =>
-                    prev.map((item) =>
-                        item.id === id
-                            ? {
-                                ...item,
-                                is_active: newStatus,
-                                estadoVisual: {
-                                    text: newStatus ? "Activo" : "Inactivo",
-                                    style: newStatus ? "estado-label activo" : "estado-label inactivo",
-                                },
-                            }
-                            : item
-                    )
-                );
+            const response = await api.patch(`movimientos/actualizar/${id}/`);
+            const updated = response.data;
 
-                // SweetAlert de éxito
-                Swal.fire({
-                    icon: "success",
-                    title: "Estado actualizado",
-                    text: `El estado se ha cambiado a ${newStatus ? "Activo" : "Inactivo"}.`,
-                    timer: 3000,
-                    showConfirmButton: false,
-                    toast: true,
-                    position: "top-right",
-                });
-            }
+            const newStatus = updated.is_active ?? currentStatus;
+
+            setData((prev) =>
+                prev.map((item) =>
+                    item.id === id
+                        ? {
+                            ...item,
+                            is_active: newStatus,
+                            estadoVisual: {
+                                text: newStatus ? "Activo" : "Inactivo",
+                                style: newStatus ? "estado-label activo" : "estado-label inactivo",
+                            },
+                        }
+                        : item
+                )
+            );
+
+            Swal.fire({
+                icon: "success",
+                title: "Estado actualizado",
+                text: `El estado se ha cambiado a ${newStatus ? "Activo" : "Inactivo"}.`,
+                timer: 3000,
+                showConfirmButton: false,
+                toast: true,
+                position: "top-right",
+            });
         } catch (err) {
             setUpdateError(err.message || 'Error al actualizar el estado');
 
-            // SweetAlert de error
             Swal.fire({
                 icon: "error",
                 title: "Error",
@@ -72,15 +70,6 @@ export const useDisableStatus = (setUsuarios) => {
         } finally {
             setIsUpdating(false);
         }
-        // try {
-        //     const response = await api.patch(`usuarios/${id}/estado/`); // Endpoint para cambiar estado
-        //     return response.data.data.is_active; // Devuelve el nuevo estado desde la respuesta
-        // } catch (err) {
-        //     setUpdateError(err.message || 'Error al actualizar el estado');
-        //     throw err; // Lanza el error para manejarlo en el componente
-        // } finally {
-        //     setIsUpdating(false);
-        // }
     };
 
     return { toggleStatus, isUpdating, updateError };
