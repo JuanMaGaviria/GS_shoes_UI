@@ -4,16 +4,16 @@ import { Routes, Route } from 'react-router-dom';
 
 // importaciones generales 
 import Login from './modules/core/Login/components/Login.jsx'
-
+import RestablecerClave from './modules/core/Login/components/RestablecerClave.jsx'
 import CambiarClave from './modules/core/Login/components/CambiarClave.jsx';
-import Sidebar from './modules/Core/Sidebar/components/Sidebar.jsx';
-import ProtectedRoute from './modules/Core/ProtectedRoute/components/ProtectedRoute.jsx';
+import Sidebar from './modules/core/Sidebar/components/Sidebar.jsx';
+import ProtectedRoute from './modules/core/ProtectedRoute/components/ProtectedRoute.jsx';
 
 // importaciones de modulos
-import Inicio from './modules/inicio/components/Inicio.jsx';
-import Usuarios from './modules/usuarios/components/Usuarios.jsx';
-import Articulos from './modules/articulos/components/Articulos.jsx';
-import Movimientos from './modules/movimientos/components/Movimientos.jsx';
+import Inicio from './modules/Inicio/components/Inicio.jsx';
+import Usuarios from './modules/Usuarios/components/Usuarios.jsx';
+import Articulos from './modules/Articulos/components/Articulos.jsx';
+import Movimientos from './modules/Movimientos/components/Movimientos.jsx';
 
 const App = () => {
     return (

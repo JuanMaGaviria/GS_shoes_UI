@@ -7,16 +7,16 @@ import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
 // Importaciones locales
 // Importaciones componentes locales
-import TablaDinamica from '../../Core/Tabla/components/TablaDinamica.jsx';
+import TablaDinamica from '../../core/Tabla/components/TablaDinamica.jsx';
 import { columnasGenerales } from './columnasGenerales.jsx';
-import ActionButton from '../../Core/ActionButton/components/ActionButton.jsx';
-import ModalForm from '../../Core/ModalForm/components/ModalForm.jsx';
-import Loader from '../../Core/Loader/components/Loader.jsx';
+import ActionButton from '../../core/ActionButton/components/ActionButton.jsx';
+import ModalForm from '../../core/ModalForm/components/ModalForm.jsx';
+import Loader from '../../core/Loader/components/Loader.jsx';
 // Hooks de funcionalidades
 import useFetchData from '../hooks/useFetchData.jsx';
 import { useCreateData } from '../hooks/useCreateData.jsx';
-import { useValidation } from '../../Core/Validation/hooks/useValidation.jsx';
-import { useActionButton } from '../../Core/ActionButton/hooks/useActionButton.jsx';
+import { useValidation } from '../../core/Validation/hooks/useValidation.jsx';
+import { useActionButton } from '../../core/ActionButton/hooks/useActionButton.jsx';
 import { useUpdateData } from '../hooks/useUpdateData.jsx';
 import { useDisableStatus } from '../hooks/useDisableStatus.jsx';
 import { useDeleteData } from '../hooks/useDeleteData.jsx';

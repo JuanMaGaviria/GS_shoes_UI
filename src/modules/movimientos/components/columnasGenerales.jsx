@@ -1,4 +1,4 @@
-import ActionButton from "../../Core/ActionButton/components/ActionButton";
+import ActionButton from "../../core/ActionButton/components/ActionButton";
 
 export const columnasGenerales = (handleDetails, handleEdit, handleToggleStatus, handleDelete) => [
     { header: 'Fecha movimiento', accessor: 'fecha_movimiento' },

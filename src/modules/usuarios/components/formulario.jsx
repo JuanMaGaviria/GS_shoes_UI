@@ -1,6 +1,6 @@
 // FormularioUsuario.jsx
 import React, { useState, useEffect } from 'react';
-import { useValidation } from '../../Core/Validation/hooks/useValidation.jsx';
+import { useValidation } from '../../core/Validation/hooks/useValidation.jsx';
 
 
 const Formulario = ({ formData, setFormData, modalData}) => {
